@@ -24,6 +24,7 @@
     .panels {
       min-height:100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -41,6 +42,11 @@
       font-size: 20px;
       background-size:cover;
       background-position:center;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
     }
 
 
@@ -49,12 +55,22 @@
     .panel3 { background-image:url(https://images.unsplash.com/photo-1465188162913-8fb5709d6d57?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&w=1500&h=1500&fit=crop&s=967e8a713a4e395260793fc8c802901d); }
     .panel4 { background-image:url(https://source.unsplash.com/ITjiVXcwVng/1500x1500); }
     .panel5 { background-image:url(https://source.unsplash.com/3MNzGlQM7qs/1500x1500); }
-
+/*flex children/items*/
     .panel > * {
       margin:0;
       width: 100%;
       transition:transform 0.5s;
+      border: 1px solid red;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+/*translateY(-100%) puts children off screen*/
+    .panel > *:first-child{transform: translateY(-100%);}
+    .panel.open-active > *:first-child{transform: translateY(0);}
+    .panel > *:last-child{transform: translateY(+100%);}
+    .panel.open-active > *:last-child{transform: translateY(0);}
 
     .panel p {
       text-transform: uppercase;
@@ -65,9 +81,15 @@
     .panel p:nth-child(2) {
       font-size: 4em;
     }
-
+/* when it has a class of open, will take 5x as much room */
     .panel.open {
+      flex: 5;
       font-size:40px;
+    }
+
+    .cta{
+      color:white;
+      text-decoration: none;
     }
 
   </style>
@@ -100,9 +122,24 @@
       <p>Motion</p>
     </div>
   </div>
-
+<!-- querySelectorAll will give a none list -->
+<!--note it's listening to each individual panel  -->
   <script>
+const panels = document.querySelectorAll('.panel');
+function toggleOpen(){
+  this.classList.toggle('open');
+}
+function toggleActive(e){
+  console.log(e.propertyName);
+  if (e.propertyName.includes('flex')){
+    this.classList.toggle('open-active');
+  }
+}
 
+//loop over each panel. Listen for a click, then run toggle function
+// only needs reference of toggleOpen, rather than happen at page opening.
+panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
   </script>
 
 
