@@ -5,8 +5,66 @@
   <title>HTML5 Canvas</title>
 </head>
 <body>
+  <!--default canvas size. TB edited in JS -->
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+const canvas = document.querySelector('#draw');
+// with canvas - you're actually drawing on the context, not the canvas
+ const ctx = canvas.getContext('2d');
+ // size canvas to same width of window:
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+ // base settings
+ ctx.strokeStyle = '#BADA55';
+ // ctx.lineWidth = hue;
+ ctx.lineJoin = 'round';
+ ctx.lineCap = 'round';
+ ctx.lineWidth = 100;
+ ctx.globalCompositeOperation = 'soft-light'
+ // set dummy variables.
+ let isDrawing = false;
+ // need a starting and ending X&Y
+ let lastX = 0;
+ let lastY = 0;
+ let hue = 0;
+ let direction = true;
+// click and drag functionality:
+function draw(e) {
+  // stop function from running when mouse isn't clicked down
+  if (!isDrawing)return;
+  console.log(e);
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  ctx.beginPath();
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+[lastX, lastY] = [e.offsetX, e.offsetY];
+hue++;
+if (hue >= 360) {
+  hue = 0;
+}
+// if greater than 100 or 1, flip direction
+if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1){
+  direction = !direction;
+}
+if (direction){
+  ctx.lineWidth++;
+} else {
+  ctx.lineWidth--;
+  }
+}
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mousedout', () => isDrawing = false);
+
+
 </script>
 
 <style>
